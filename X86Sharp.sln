@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X86Sharp", "X86Sharp\X86Sharp.csproj", "{521CE61E-2A65-42F7-A047-A346DB62FCA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X86Sharp.Tests", "X86Sharp.Tests\X86Sharp.Tests.csproj", "{91F9F85B-9575-461F-A13A-98F7E41DEF6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{521CE61E-2A65-42F7-A047-A346DB62FCA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{521CE61E-2A65-42F7-A047-A346DB62FCA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{521CE61E-2A65-42F7-A047-A346DB62FCA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F9F85B-9575-461F-A13A-98F7E41DEF6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F9F85B-9575-461F-A13A-98F7E41DEF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F9F85B-9575-461F-A13A-98F7E41DEF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F9F85B-9575-461F-A13A-98F7E41DEF6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

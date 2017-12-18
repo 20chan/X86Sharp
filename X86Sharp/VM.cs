@@ -129,7 +129,7 @@ namespace X86Sharp
 
         #region Memory
         readonly int STACK_SIZE = 1024;
-        Span<byte> _memory;
+        byte[] _memory;
         #endregion
 
         public VM()
@@ -159,7 +159,7 @@ namespace X86Sharp
             EIP = (dwordop)0;
 
             eflag = 0;
-            _memory = new byte[STACK_SIZE * 1024].AsSpan();
+            _memory = new byte[STACK_SIZE * 1024];
         }
 
         private void LoadInstructions()
