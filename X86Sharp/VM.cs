@@ -51,37 +51,58 @@ namespace X86Sharp
         private Register EAX, EBX, ECX, EDX;
         private Register ESI, EDI, ESP, EBP, EIP;
         #endregion
-        
+
         #region Segments
         public class SegmentManager
         {
             private VM _vm;
-
-            public bool CF => _vm.eflag.CF;
-            public bool PF => _vm.eflag.PF;
-            public bool AF => _vm.eflag.AF;
-            public bool ZF => _vm.eflag.ZF;
-            public bool SF => _vm.eflag.SF;
-            public bool TF => _vm.eflag.TF;
-            public bool IF => _vm.eflag.IF;
-            public bool DF => _vm.eflag.DF;
-            public bool OF => _vm.eflag.OF;
-            public bool IOPL => _vm.eflag.IOPL;
-            public bool IOPL2 => _vm.eflag.IOPL2;
-            public bool NT => _vm.eflag.NT;
-            public bool RF => _vm.eflag.RF;
-            public bool VM => _vm.eflag.VM;
-            public bool AC => _vm.eflag.AC;
-            public bool VIF => _vm.eflag.VIF;
-            public bool VIP => _vm.eflag.VIP;
-            public bool ID => _vm.eflag.ID;
+            public ref ushort CS => ref _vm.CS;
+            public ref ushort DS => ref _vm.DS;
+            public ref ushort SS => ref _vm.SS;
+            public ref ushort ES => ref _vm.ES;
+            public ref ushort FS => ref _vm.FS;
+            public ref ushort GS => ref _vm.GS;
 
             public SegmentManager(VM vm)
             {
                 _vm = vm;
             }
         }
-        public SegmentManager Segments { get; private set; }
+
+        private ushort CS, DS, SS, ES, FS, GS;
+
+        #endregion
+
+        #region EFLAGs
+        public class EflagsManager
+        {
+            private VM _vm;
+
+            public ref bool CF => ref _vm.eflag.CF;
+            public ref bool PF => ref _vm.eflag.PF;
+            public ref bool AF => ref _vm.eflag.AF;
+            public ref bool ZF => ref _vm.eflag.ZF;
+            public ref bool SF => ref _vm.eflag.SF;
+            public ref bool TF => ref _vm.eflag.TF;
+            public ref bool IF => ref _vm.eflag.IF;
+            public ref bool DF => ref _vm.eflag.DF;
+            public ref bool OF => ref _vm.eflag.OF;
+            public ref bool IOPL => ref _vm.eflag.IOPL;
+            public ref bool IOPL2 => ref _vm.eflag.IOPL2;
+            public ref bool NT => ref _vm.eflag.NT;
+            public ref bool RF => ref _vm.eflag.RF;
+            public ref bool VM => ref _vm.eflag.VM;
+            public ref bool AC => ref _vm.eflag.AC;
+            public ref bool VIF => ref _vm.eflag.VIF;
+            public ref bool VIP => ref _vm.eflag.VIP;
+            public ref bool ID => ref _vm.eflag.ID;
+
+            public EflagsManager(VM vm)
+            {
+                _vm = vm;
+            }
+        }
+        public EflagsManager Segments { get; private set; }
         private EFlags eflag;
         #endregion
 
@@ -135,7 +156,7 @@ namespace X86Sharp
         public VM()
         {
             Registers = new RegisterManager(this);
-            Segments = new SegmentManager(this);
+            Segments = new EflagsManager(this);
             Instructions = new InstructionManager(this);
             _instructionsFromType = new Dictionary<InstructionType, Delegate>();
             _instructions0args = new Dictionary<uint, InstructionCallback0args>();
@@ -157,6 +178,13 @@ namespace X86Sharp
             ESP = 0;
             EBP = 0;
             EIP = 0;
+
+            CS = 0;
+            DS = 0;
+            SS = 0;
+            ES = 0;
+            FS = 0;
+            GS = 0;
 
             eflag = 0;
             _memory = new byte[STACK_SIZE * 1024];
