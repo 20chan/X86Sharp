@@ -13,34 +13,34 @@ namespace X86Sharp
         public class RegisterManager
         {
             private VM _vm;
-            public ref dwordop EAX => ref _vm.EAX.DWord;
-            public ref dwordop EBX => ref _vm.EBX.DWord;
-            public ref dwordop ECX => ref _vm.ECX.DWord;
-            public ref dwordop EDX => ref _vm.EDX.DWord;
-            public ref dwordop ESP => ref _vm.ESP.DWord;
-            public ref dwordop EBP => ref _vm.EBP.DWord;
-            public ref dwordop ESI => ref _vm.ESI.DWord;
-            public ref dwordop EDI => ref _vm.EDI.DWord;
-            public ref dwordop EIP => ref _vm.EIP.DWord;
+            public ref uint EAX => ref _vm.EAX.DWord;
+            public ref uint EBX => ref _vm.EBX.DWord;
+            public ref uint ECX => ref _vm.ECX.DWord;
+            public ref uint EDX => ref _vm.EDX.DWord;
+            public ref uint ESP => ref _vm.ESP.DWord;
+            public ref uint EBP => ref _vm.EBP.DWord;
+            public ref uint ESI => ref _vm.ESI.DWord;
+            public ref uint EDI => ref _vm.EDI.DWord;
+            public ref uint EIP => ref _vm.EIP.DWord;
 
-            public ref wordop AX => ref _vm.EAX.LowWord;
-            public ref wordop BX => ref _vm.EBX.LowWord;
-            public ref wordop CX => ref _vm.ECX.LowWord;
-            public ref wordop DX => ref _vm.EDX.LowWord;
-            public ref wordop SP => ref _vm.ESP.LowWord;
-            public ref wordop BP => ref _vm.EBP.LowWord;
-            public ref wordop SI => ref _vm.ESI.LowWord;
-            public ref wordop DI => ref _vm.EDI.LowWord;
-            public ref wordop IP => ref _vm.EIP.LowWord;
+            public ref ushort AX => ref _vm.EAX.LowWord;
+            public ref ushort BX => ref _vm.EBX.LowWord;
+            public ref ushort CX => ref _vm.ECX.LowWord;
+            public ref ushort DX => ref _vm.EDX.LowWord;
+            public ref ushort SP => ref _vm.ESP.LowWord;
+            public ref ushort BP => ref _vm.EBP.LowWord;
+            public ref ushort SI => ref _vm.ESI.LowWord;
+            public ref ushort DI => ref _vm.EDI.LowWord;
+            public ref ushort IP => ref _vm.EIP.LowWord;
 
-            public ref byteop AH => ref _vm.EAX.HighByte;
-            public ref byteop AL => ref _vm.EAX.LowByte;
-            public ref byteop BH => ref _vm.EBX.HighByte;
-            public ref byteop BL => ref _vm.EBX.LowByte;
-            public ref byteop CH => ref _vm.ECX.HighByte;
-            public ref byteop CL => ref _vm.ECX.LowByte;
-            public ref byteop DH => ref _vm.EDX.HighByte;
-            public ref byteop DL => ref _vm.EDX.LowByte;
+            public ref byte AH => ref _vm.EAX.HighByte;
+            public ref byte AL => ref _vm.EAX.LowByte;
+            public ref byte BH => ref _vm.EBX.HighByte;
+            public ref byte BL => ref _vm.EBX.LowByte;
+            public ref byte CH => ref _vm.ECX.HighByte;
+            public ref byte CL => ref _vm.ECX.LowByte;
+            public ref byte DH => ref _vm.EDX.HighByte;
+            public ref byte DL => ref _vm.EDX.LowByte;
 
             public RegisterManager(VM vm)
             {
@@ -148,15 +148,15 @@ namespace X86Sharp
 
         public void Reset()
         {
-            EAX = (dwordop)0;
-            EBX = (dwordop)0;
-            ECX = (dwordop)0;
-            EDX = (dwordop)0;
-            ESI = (dwordop)0;
-            EDI = (dwordop)0;
-            ESP = (dwordop)0;
-            EBP = (dwordop)0;
-            EIP = (dwordop)0;
+            EAX = 0;
+            EBX = 0;
+            ECX = 0;
+            EDX = 0;
+            ESI = 0;
+            EDI = 0;
+            ESP = 0;
+            EBP = 0;
+            EIP = 0;
 
             eflag = 0;
             _memory = new byte[STACK_SIZE * 1024];
@@ -194,11 +194,6 @@ namespace X86Sharp
                         _instructionsFromType.Add(inst.InstructionType, del);
                 }
             }
-        }
-
-        private void WriteOperand(ref IOperand operand)
-        {
-
         }
 
         public object ExecuteFunction(byte[] codes, Type funcType, params object[] parameters)

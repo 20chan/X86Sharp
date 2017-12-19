@@ -3,9 +3,9 @@
     public partial class VM
     {
         [Instruction(InstructionType.Mov, 0x88)]
-        public void Mov(ref IOperand dest, ref IOperand source)
+        public void Mov(ref uint dest, ref uint source)
         {
-            dest.Value = source.Value;
+            dest = source;
         }
     }
 }

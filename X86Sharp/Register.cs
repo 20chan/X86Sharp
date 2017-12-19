@@ -6,20 +6,20 @@ namespace X86Sharp
     public struct Register
     {
         [FieldOffset(0)]
-        public dwordop DWord;
+        public uint DWord;
         [FieldOffset(0)]
-        public wordop HighWord;
+        public ushort HighWord;
         [FieldOffset(2)]
-        public wordop LowWord;
+        public ushort LowWord;
         [FieldOffset(2)]
-        public byteop HighByte;
+        public byte HighByte;
         [FieldOffset(3)]
-        public byteop LowByte;
+        public byte LowByte;
 
-        public static implicit operator dwordop(Register register)
+        public static implicit operator uint(Register register)
             => register.DWord;
 
-        public static implicit operator Register(dwordop value)
+        public static implicit operator Register(uint value)
             => new Register() { DWord = value };
     }
 }

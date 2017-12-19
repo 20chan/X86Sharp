@@ -28,21 +28,16 @@ namespace X86Sharp.Tests
         {
             VM vm = new VM();
             vm.Registers.EAX = 42;
-            Assert.AreEqual((uint)42, (uint)vm.Registers.EAX);
+            Assert.AreEqual((uint)42, vm.Registers.EAX);
 
             ref var eax = ref vm.Registers.EAX;
             eax = 24;
-            Assert.AreEqual((uint)24, (uint)vm.Registers.EAX);
+            Assert.AreEqual((uint)24, vm.Registers.EAX);
 
-            unsafe
-            {
-                ref var eaxop = ref Unsafe.AsRef<IOperand>(Unsafe.AsPointer(ref eax));
-                var dword = (dwordop)42;
-                ref var numop = ref Unsafe.AsRef<IOperand>(Unsafe.AsPointer(ref dword));
-                var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.Mov);
-                mov(ref eaxop, ref numop);
-                Assert.AreEqual((uint)42, (uint)vm.Registers.EAX);
-            }
+            uint num = 42;
+            var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.Mov);
+            mov(ref eax, ref num);
+            Assert.AreEqual((uint)42, vm.Registers.EAX);
         }
     }
 }
