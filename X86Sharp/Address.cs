@@ -8,16 +8,10 @@
         public readonly int Scale;
         public readonly int Displacement;
 
-        public Address(int displacement) : this(0, 0, 0, 1, displacement) { }
-        public Address(uint @base) : this(0, @base, 0, 1, 0) { }
-        public Address(uint @base, int displacement) : this(0, @base, 0, 1, displacement) { }
-        public Address(uint index, int scale, int displacement) : this(0, 0, index, scale, displacement) { }
-        public Address(uint @base, uint index, int displacement) : this(0, @base, index, 1, displacement) { }
-
         public int ActualAddress
             => (int)(Segment + Base + Index * Scale + Displacement);
 
-        public Address(ushort seg, uint @base, uint index, int scale, int displacement)
+        public Address(ushort seg, uint @base = 0, uint index = 0, int scale = 0, int displacement = 0)
         {
             Segment = seg;
             Base = @base;

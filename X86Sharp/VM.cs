@@ -68,6 +68,7 @@ namespace X86Sharp
                 _vm = vm;
             }
         }
+        public SegmentManager Segments { get; private set; }
 
         private ushort CS, DS, SS, ES, FS, GS;
 
@@ -102,7 +103,7 @@ namespace X86Sharp
                 _vm = vm;
             }
         }
-        public EflagsManager Segments { get; private set; }
+        public EflagsManager Eflags { get; private set; }
         private EFlags eflag;
         #endregion
 
@@ -178,7 +179,8 @@ namespace X86Sharp
         public VM()
         {
             Registers = new RegisterManager(this);
-            Segments = new EflagsManager(this);
+            Segments = new SegmentManager(this);
+            Eflags = new EflagsManager(this);
             Instructions = new InstructionManager(this);
             Memory = new MemoryManager(this);
             _instructionsFromType = new Dictionary<InstructionType, Delegate>();
@@ -217,33 +219,37 @@ namespace X86Sharp
         {
             foreach (MethodInfo method in (typeof(VM)).GetMethods())
             {
-                foreach(var inst in method.GetCustomAttributes<Instruction>(true))
+                var inst = method.GetCustomAttribute<Instruction>(true);
+                if (inst == null) continue;
+
+                Delegate del;
+                switch (method.GetParameters().Length)
                 {
-                    Delegate del;
-                    switch (method.GetParameters().Length)
-                    {
-                        case 0:
-                            del = Delegate.CreateDelegate(typeof(InstructionCallback0args), this, method);
-                            _instructions0args.Add(inst.OpCode, (InstructionCallback0args)del);
-                            break;
-                        case 1:
-                            del = Delegate.CreateDelegate(typeof(InstructionCallback1arg), this, method);
-                            _instructions1arg.Add(inst.OpCode, (InstructionCallback1arg)del);
-                            break;
-                        case 2:
-                            del = Delegate.CreateDelegate(typeof(InstructionCallback2args), this, method);
-                            _instructions2args.Add(inst.OpCode, (InstructionCallback2args)del);
-                            break;
-                        case 3:
-                            del = Delegate.CreateDelegate(typeof(InstructionCallback3args), this, method);
-                            _instructions3args.Add(inst.OpCode, (InstructionCallback3args)del);
-                            break;
-                        default:
-                            throw new Exception("Too many instrucment parameters");
-                    }
-                    if (!_instructionsFromType.ContainsKey(inst.InstructionType))
-                        _instructionsFromType.Add(inst.InstructionType, del);
+                    case 0:
+                        del = Delegate.CreateDelegate(typeof(InstructionCallback0args), this, method);
+                        foreach(var opcode in inst.OpCodes)
+                        _instructions0args.Add(opcode, (InstructionCallback0args)del);
+                        break;
+                    case 1:
+                        del = Delegate.CreateDelegate(typeof(InstructionCallback1arg), this, method);
+                        foreach (var opcode in inst.OpCodes)
+                            _instructions1arg.Add(opcode, (InstructionCallback1arg)del);
+                        break;
+                    case 2:
+                        del = Delegate.CreateDelegate(typeof(InstructionCallback2args), this, method);
+                        foreach (var opcode in inst.OpCodes)
+                            _instructions2args.Add(opcode, (InstructionCallback2args)del);
+                        break;
+                    case 3:
+                        del = Delegate.CreateDelegate(typeof(InstructionCallback3args), this, method);
+                        foreach (var opcode in inst.OpCodes)
+                            _instructions3args.Add(opcode, (InstructionCallback3args)del);
+                        break;
+                    default:
+                        throw new Exception("Too many instrucment parameters");
                 }
+                if (!_instructionsFromType.ContainsKey(inst.InstructionType))
+                    _instructionsFromType.Add(inst.InstructionType, del);
             }
         }
 

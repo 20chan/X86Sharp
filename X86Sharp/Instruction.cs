@@ -11,10 +11,10 @@ namespace X86Sharp
     public class Instruction : Attribute
     {
         public InstructionType InstructionType;
-        public uint OpCode;
-        public Instruction(InstructionType type, uint opcode)
+        public uint[] OpCodes;
+        public Instruction(InstructionType type, params uint[] opcodes)
         {
-            OpCode = opcode;
+            OpCodes = opcodes;
             InstructionType = type;
         }
     }

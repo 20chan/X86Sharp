@@ -4,5 +4,6 @@
     {
         Nop,
         Mov,
+        Push,
     }
 }
