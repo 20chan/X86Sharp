@@ -149,6 +149,28 @@ namespace X86Sharp
         #endregion
 
         #region Memory
+        public class MemoryManager
+        {
+            private VM _vm;
+
+            public MemoryManager(VM vm)
+            {
+                _vm = vm;
+            }
+
+            public Span<byte> GetValue(Address address, int size)
+                => new Span<byte>(
+                    _vm._memory,
+                    address.ActualAddress,
+                    size);
+
+            public ReadOnlySpan<byte> GetReadonlyValue(Address address, int size)
+                => new ReadOnlySpan<byte>(
+                    _vm._memory,
+                    address.ActualAddress,
+                    size);
+        }
+        public MemoryManager Memory { get; private set; }
         readonly int STACK_SIZE = 1024;
         byte[] _memory;
         #endregion
@@ -158,6 +180,7 @@ namespace X86Sharp
             Registers = new RegisterManager(this);
             Segments = new EflagsManager(this);
             Instructions = new InstructionManager(this);
+            Memory = new MemoryManager(this);
             _instructionsFromType = new Dictionary<InstructionType, Delegate>();
             _instructions0args = new Dictionary<uint, InstructionCallback0args>();
             _instructions1arg = new Dictionary<uint, InstructionCallback1arg>();

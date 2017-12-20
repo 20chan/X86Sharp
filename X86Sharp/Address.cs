@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace X86Sharp
+﻿namespace X86Sharp
 {
     public struct Address
     {
@@ -17,6 +13,9 @@ namespace X86Sharp
         public Address(uint @base, int displacement) : this(0, @base, 0, 1, displacement) { }
         public Address(uint index, int scale, int displacement) : this(0, 0, index, scale, displacement) { }
         public Address(uint @base, uint index, int displacement) : this(0, @base, index, 1, displacement) { }
+
+        public int ActualAddress
+            => (int)(Segment + Base + Index * Scale + Displacement);
 
         public Address(ushort seg, uint @base, uint index, int scale, int displacement)
         {
