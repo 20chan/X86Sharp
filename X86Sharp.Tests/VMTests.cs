@@ -48,11 +48,11 @@ namespace X86Sharp.Tests
             {
                 var dword0to4 = vm.Memory.GetValue(new Address(displacement: 0), 4);
                 var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.Mov);
-                ref var refptr = ref Unsafe.AsRef<uint>(Unsafe.AsPointer(ref dword0to4[0]));
+                ref var refptr = ref dword0to4.NonPortableCast<byte, uint>()[0];
                 uint num = 0x12345678;
                 mov(ref refptr, ref num);
 
-                var res = BitConverter.ToUInt32(new byte[4] { dword0to4[0], dword0to4[1], dword0to4[2], dword0to4[3] }, 0);
+                var res = BitConverter.ToUInt32(dword0to4.ToArray(), 0);
                 Assert.AreEqual(num, res);
 
                 System.Diagnostics.Debugger.Break();
