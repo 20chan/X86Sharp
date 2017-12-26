@@ -14,7 +14,7 @@ namespace X86Sharp.Tests
             VM vm = new VM();
             try
             {
-                vm.Instructions.GetInstructionFromType<InstructionCallback0args>(InstructionType.Nop)();
+                vm.Instructions.GetInstructionFromType<InstructionCallback0args>(InstructionType.NOP)();
             }
             catch (KeyNotFoundException)
             {
@@ -34,7 +34,7 @@ namespace X86Sharp.Tests
             Assert.AreEqual((uint)24, vm.Registers.EAX);
 
             uint num = 42;
-            var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.Mov);
+            var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.MOV);
             mov(ref eax, ref num);
             Assert.AreEqual((uint)42, vm.Registers.EAX);
         }
@@ -45,15 +45,13 @@ namespace X86Sharp.Tests
             VM vm = new VM();
 
             var dword0to4 = vm.Memory.GetValue(new Address(vm.Segments.SS, displacement: 0), 4);
-            var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.Mov);
+            var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.MOV);
             ref var refptr = ref dword0to4.NonPortableCast<byte, uint>()[0];
             uint num = 0x12345678;
             mov(ref refptr, ref num);
 
             var res = BitConverter.ToUInt32(dword0to4.ToArray(), 0);
             Assert.AreEqual(num, res);
-
-            System.Diagnostics.Debugger.Break();
         }
     }
 }
