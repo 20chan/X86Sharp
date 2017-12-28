@@ -53,5 +53,22 @@ namespace X86Sharp.Tests
             var res = BitConverter.ToUInt32(dword0to4.ToArray(), 0);
             Assert.AreEqual(num, res);
         }
+
+        [TestMethod, TestCategory("Memory")]
+        public void PushPopTests()
+        {
+            VM vm = new VM();
+
+            var dword0to4 = vm.Memory.GetValue(new Address(vm.Segments.SS, vm.Registers.ESP), 4);
+            uint num = 0x01020304;
+            var push = vm.Instructions.GetInstructionFromType<InstructionCallback1arg>(InstructionType.PUSH);
+            push(ref num);
+
+            CollectionAssert.AreEqual(new byte[] { 0x04, 0x03, 0x02, 0x01 }, dword0to4.ToArray());
+
+            var pop = vm.Instructions.GetInstructionFromType<InstructionCallback1arg>(InstructionType.POP);
+            pop(ref vm.Registers.EAX);
+            Assert.AreEqual(num, vm.Registers.EAX);
+        }
     }
 }

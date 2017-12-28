@@ -194,13 +194,14 @@ namespace X86Sharp
 
         public void Reset()
         {
+            _memory = new byte[STACK_SIZE * 1024];
             EAX = 0;
             EBX = 0;
             ECX = 0;
             EDX = 0;
             ESI = 0;
             EDI = 0;
-            ESP = 0;
+            ESP = (uint)_memory.Length - 1;
             EBP = 0;
             EIP = 0;
 
@@ -212,7 +213,6 @@ namespace X86Sharp
             GS = 0;
 
             eflag = 0;
-            _memory = new byte[STACK_SIZE * 1024];
         }
 
         private void LoadInstructions()
