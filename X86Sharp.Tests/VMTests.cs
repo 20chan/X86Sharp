@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -53,7 +54,7 @@ namespace X86Sharp.Tests
             uint num = 0x12345678;
             mov(addr, num);
             
-            var res = BitConverter.ToUInt32(vm.Memory.GetValue(addr).ToArray(), 0);
+            var res = BitConverter.ToUInt32(vm.Memory.GetMemory(addr).ToArray(), 0);
             Assert.AreEqual(num, res);
         }
 
@@ -62,7 +63,7 @@ namespace X86Sharp.Tests
         {
             VM vm = new VM();
 
-            var dword0to4 = vm.Memory.GetValue(new Address(SS, 4, vm.Registers.ESP));
+            var dword0to4 = vm.Memory.GetMemory(new Address(SS, 4, vm.Registers.ESP));
             uint num = 0x01020304;
             var push = vm.Instructions.GetInstructionFromType<InstructionCallback1arg>(InstructionType.PUSH);
             push(num);

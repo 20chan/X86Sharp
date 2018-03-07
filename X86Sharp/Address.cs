@@ -10,7 +10,7 @@
         public readonly uint Size;
 
         public int ActualAddress(VM vm)
-            => (int)(vm[Segment]+ Base + Index * Scale + Displacement);
+            => (int)(vm[Segment] - (Base + Index * Scale + Displacement));
 
         public Address(SegmentType seg, uint size, uint @base = 0, uint index = 0, int scale = 0, int displacement = 0)
         {

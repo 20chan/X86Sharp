@@ -159,17 +159,17 @@ namespace X86Sharp
                 _vm = vm;
             }
 
-            public Span<byte> GetValue(Address address)
-                => new Span<byte>(
-                    _vm._memory,
-                    _vm._memory.Length - address.ActualAddress(_vm),
-                    (int)address.Size);
+            public IEnumerable<byte> GetMemory(Address address)
+            {
+                for (int i = 0; i < address.Size; i++)
+                    yield return _vm._memory[address.ActualAddress(_vm) - i];
+            }
 
-            public ReadOnlySpan<byte> GetReadonlyValue(Address address, int size)
-                => new ReadOnlySpan<byte>(
-                    _vm._memory,
-                    _vm._memory.Length - address.ActualAddress(_vm),
-                    size);
+            public void SetMemory(Address address, byte[] bytes)
+            {
+                for (int i = 0; i < address.Size; i++)
+                    _vm._memory[address.ActualAddress(_vm) - i] = bytes[i];
+            }
         }
         public MemoryManager Memory { get; private set; }
         readonly int STACK_SIZE = 1024;

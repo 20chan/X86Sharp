@@ -17,9 +17,8 @@ namespace X86Sharp
         public void Push(ref uint dest)
         {
             Registers.ESP -= 4;
-            var bytes = BitConverter.GetBytes(dest).AsSpan();
-            var mem = Memory.GetValue(new Address(SegmentType.SS, 4, Registers.ESP, 0, 1, 0));
-            bytes.CopyTo(mem);
+            var bytes = BitConverter.GetBytes(dest);
+            Memory.SetMemory(new Address(SegmentType.SS, 4, Registers.ESP, 0, 1, 0), bytes);
         }
     }
 }
