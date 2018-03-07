@@ -48,8 +48,8 @@ namespace X86Sharp
             }
         }
         public RegisterManager Registers { get; private set; }
-        private Register EAX, EBX, ECX, EDX;
-        private Register ESI, EDI, ESP, EBP, EIP;
+        private RegisterMemory EAX, EBX, ECX, EDX;
+        private RegisterMemory ESI, EDI, ESP, EBP, EIP;
         #endregion
 
         #region Segments
@@ -159,16 +159,16 @@ namespace X86Sharp
                 _vm = vm;
             }
 
-            public Span<byte> GetValue(Address address, int size)
+            public Span<byte> GetValue(Address address)
                 => new Span<byte>(
                     _vm._memory,
-                    address.ActualAddress,
-                    size);
+                    _vm._memory.Length - address.ActualAddress(_vm),
+                    (int)address.Size);
 
             public ReadOnlySpan<byte> GetReadonlyValue(Address address, int size)
                 => new ReadOnlySpan<byte>(
                     _vm._memory,
-                    address.ActualAddress,
+                    _vm._memory.Length - address.ActualAddress(_vm),
                     size);
         }
         public MemoryManager Memory { get; private set; }
@@ -201,13 +201,13 @@ namespace X86Sharp
             EDX = 0;
             ESI = 0;
             EDI = 0;
-            ESP = (uint)_memory.Length - 1;
+            ESP = 0;
             EBP = 0;
             EIP = 0;
 
             CS = 0;
             DS = 0;
-            SS = 0;
+            SS = (ushort)_memory.Length;
             ES = 0;
             FS = 0;
             GS = 0;
@@ -227,8 +227,8 @@ namespace X86Sharp
                 {
                     case 0:
                         del = Delegate.CreateDelegate(typeof(InstructionCallback0args), this, method);
-                        foreach(var opcode in inst.OpCodes)
-                        _instructions0args.Add(opcode, (InstructionCallback0args)del);
+                        foreach (var opcode in inst.OpCodes)
+                            _instructions0args.Add(opcode, (InstructionCallback0args)del);
                         break;
                     case 1:
                         del = Delegate.CreateDelegate(typeof(InstructionCallback1arg), this, method);
@@ -261,6 +261,217 @@ namespace X86Sharp
         public void ExecuteCode(params byte[] codes)
         {
             throw new NotImplementedException();
+        }
+
+        public object this[RegisterType reg]
+        {
+            get
+            {
+                switch (reg)
+                {
+                    case RegisterType.EAX:
+                        return Registers.EAX;
+                    case RegisterType.EBX:
+                        return Registers.EBX;
+                    case RegisterType.ECX:
+                        return Registers.ECX;
+                    case RegisterType.EDX:
+                        return Registers.EDX;
+                    case RegisterType.ESP:
+                        return Registers.ESP;
+                    case RegisterType.EBP:
+                        return Registers.EBP;
+                    case RegisterType.ESI:
+                        return Registers.ESI;
+                    case RegisterType.EDI:
+                        return Registers.EDI;
+                    case RegisterType.EIP:
+                        return Registers.EIP;
+                    case RegisterType.AX:
+                        return Registers.AX;
+                    case RegisterType.BX:
+                        return Registers.BX;
+                    case RegisterType.CX:
+                        return Registers.CX;
+                    case RegisterType.DX:
+                        return Registers.DX;
+                    case RegisterType.SP:
+                        return Registers.SP;
+                    case RegisterType.BP:
+                        return Registers.BP;
+                    case RegisterType.SI:
+                        return Registers.SI;
+                    case RegisterType.DI:
+                        return Registers.DI;
+                    case RegisterType.IP:
+                        return Registers.IP;
+                    case RegisterType.AH:
+                        return Registers.AH;
+                    case RegisterType.AL:
+                        return Registers.AL;
+                    case RegisterType.BH:
+                        return Registers.BH;
+                    case RegisterType.BL:
+                        return Registers.BL;
+                    case RegisterType.CH:
+                        return Registers.CH;
+                    case RegisterType.CL:
+                        return Registers.CL;
+                    case RegisterType.DH:
+                        return Registers.DH;
+                    case RegisterType.DL:
+                        return Registers.DL;
+                    default:
+                        throw new IndexOutOfRangeException("No such register type");
+                }
+            }
+            set
+            {
+                if (RegisterType.EAX <= reg && reg <= RegisterType.EIP)
+                {
+                    if (!(value is uint))
+                        throw new Exception($"value of {reg} is uint, but got {value.GetType()}");
+                }
+                else if (RegisterType.AX <= reg && reg <= RegisterType.IP)
+                {
+                    if (!(value is ushort))
+                        throw new Exception($"value of {reg} is uint, but got {value.GetType()}");
+                }
+                if (RegisterType.AX <= reg && reg <= RegisterType.DL)
+                {
+                    if (!(value is byte))
+                        throw new Exception($"value of {reg} is uint, but got {value.GetType()}");
+                }
+                switch (reg)
+                {
+                    case RegisterType.EAX:
+                        Registers.EAX = (uint)value;
+                        return;
+                    case RegisterType.EBX:
+                        Registers.EBX = (uint)value;
+                        return;
+                    case RegisterType.ECX:
+                        Registers.ECX = (uint)value;
+                        return;
+                    case RegisterType.EDX:
+                        Registers.EDX = (uint)value;
+                        return;
+                    case RegisterType.ESP:
+                        Registers.ESP = (uint)value;
+                        return;
+                    case RegisterType.EBP:
+                        Registers.EBP = (uint)value;
+                        return;
+                    case RegisterType.ESI:
+                        Registers.ESI = (uint)value;
+                        return;
+                    case RegisterType.EDI:
+                        Registers.EDI = (uint)value;
+                        return;
+                    case RegisterType.EIP:
+                        Registers.EIP = (uint)value;
+                        return;
+                    case RegisterType.AX:
+                        Registers.AX = (ushort)value;
+                        return;
+                    case RegisterType.BX:
+                        Registers.BX = (ushort)value;
+                        return;
+                    case RegisterType.CX:
+                        Registers.CX = (ushort)value;
+                        return;
+                    case RegisterType.DX:
+                        Registers.DX = (ushort)value;
+                        return;
+                    case RegisterType.SP:
+                        Registers.SP = (ushort)value;
+                        return;
+                    case RegisterType.BP:
+                        Registers.BP = (ushort)value;
+                        return;
+                    case RegisterType.SI:
+                        Registers.SI = (ushort)value;
+                        return;
+                    case RegisterType.DI:
+                        Registers.DI = (ushort)value;
+                        return;
+                    case RegisterType.IP:
+                        Registers.IP = (ushort)value;
+                        return;
+                    case RegisterType.AH:
+                        Registers.AH = (byte)value;
+                        return;
+                    case RegisterType.AL:
+                        Registers.AL = (byte)value;
+                        return;
+                    case RegisterType.BH:
+                        Registers.BH = (byte)value;
+                        return;
+                    case RegisterType.BL:
+                        Registers.BL = (byte)value;
+                        return;
+                    case RegisterType.CH:
+                        Registers.CH = (byte)value;
+                        return;
+                    case RegisterType.CL:
+                        Registers.CL = (byte)value;
+                        return;
+                    case RegisterType.DH:
+                        Registers.DH = (byte)value;
+                        return;
+                    case RegisterType.DL:
+                        Registers.DL = (byte)value;
+                        return;
+                }
+            }
+        }
+
+        public ushort this[SegmentType seg]
+        {
+            get
+            {
+                switch (seg)
+                {
+                    case SegmentType.CS:
+                        return Segments.CS;
+                    case SegmentType.DS:
+                        return Segments.DS;
+                    case SegmentType.SS:
+                        return Segments.SS;
+                    case SegmentType.ES:
+                        return Segments.ES;
+                    case SegmentType.FS:
+                        return Segments.FS;
+                    case SegmentType.GS:
+                        return Segments.GS;
+                    default:
+                        throw new IndexOutOfRangeException("No such register type");
+                }
+            }
+            private set
+            {
+                switch (seg)
+                {
+                    case SegmentType.CS:
+                        Segments.CS = value;
+                        break;
+                    case SegmentType.DS:
+                        Segments.DS = value;
+                        break;
+                    case SegmentType.SS:
+                        Segments.SS = value;
+                        break;
+                    case SegmentType.ES:
+                        Segments.ES = value;
+                        break;
+                    case SegmentType.FS:
+                        Segments.FS = value;
+                        break;
+                    case SegmentType.GS:
+                        Segments.GS = value;
+                        break;
+                }
+            }
         }
     }
 }

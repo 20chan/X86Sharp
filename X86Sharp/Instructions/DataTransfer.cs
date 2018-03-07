@@ -18,7 +18,7 @@ namespace X86Sharp
         {
             Registers.ESP -= 4;
             var bytes = BitConverter.GetBytes(dest).AsSpan();
-            var mem = Memory.GetValue(new Address(Segments.SS, Registers.ESP, 0, 1, 0), 4);
+            var mem = Memory.GetValue(new Address(SegmentType.SS, 4, Registers.ESP, 0, 1, 0));
             bytes.CopyTo(mem);
         }
     }

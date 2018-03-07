@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using static X86Sharp.RegisterType;
+using static X86Sharp.SegmentType;
+
 namespace X86Sharp.Tests
 {
     [TestClass]
@@ -28,14 +31,15 @@ namespace X86Sharp.Tests
             VM vm = new VM();
             vm.Registers.EAX = 42;
             Assert.AreEqual((uint)42, vm.Registers.EAX);
+            Assert.AreEqual(vm[EAX], vm.Registers.EAX);
 
-            ref var eax = ref vm.Registers.EAX;
-            eax = 24;
-            Assert.AreEqual((uint)24, vm.Registers.EAX);
+            vm[EAX] = (uint)24;
+            Assert.AreEqual((uint)24, vm[EAX]);
+            Assert.AreEqual(vm[EAX], vm.Registers.EAX);
 
             uint num = 42;
             var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.MOV);
-            mov(ref eax, ref num);
+            mov(EAX, num);
             Assert.AreEqual((uint)42, vm.Registers.EAX);
         }
 
@@ -43,14 +47,13 @@ namespace X86Sharp.Tests
         public void MemorySpanTests()
         {
             VM vm = new VM();
-
-            var dword0to4 = vm.Memory.GetValue(new Address(vm.Segments.SS, displacement: 0), 4);
             var mov = vm.Instructions.GetInstructionFromType<InstructionCallback2args>(InstructionType.MOV);
-            ref var refptr = ref dword0to4.NonPortableCast<byte, uint>()[0];
-            uint num = 0x12345678;
-            mov(ref refptr, ref num);
 
-            var res = BitConverter.ToUInt32(dword0to4.ToArray(), 0);
+            var addr = new Address(SS, 4, displacement: 0);
+            uint num = 0x12345678;
+            mov(addr, num);
+            
+            var res = BitConverter.ToUInt32(vm.Memory.GetValue(addr).ToArray(), 0);
             Assert.AreEqual(num, res);
         }
 
@@ -59,16 +62,16 @@ namespace X86Sharp.Tests
         {
             VM vm = new VM();
 
-            var dword0to4 = vm.Memory.GetValue(new Address(vm.Segments.SS, vm.Registers.ESP), 4);
+            var dword0to4 = vm.Memory.GetValue(new Address(SS, 4, vm.Registers.ESP));
             uint num = 0x01020304;
             var push = vm.Instructions.GetInstructionFromType<InstructionCallback1arg>(InstructionType.PUSH);
-            push(ref num);
+            push(num);
 
             CollectionAssert.AreEqual(new byte[] { 0x04, 0x03, 0x02, 0x01 }, dword0to4.ToArray());
 
             var pop = vm.Instructions.GetInstructionFromType<InstructionCallback1arg>(InstructionType.POP);
-            pop(ref vm.Registers.EAX);
-            Assert.AreEqual(num, vm.Registers.EAX);
+            pop(EAX);
+            Assert.AreEqual(num, vm[EAX]);
         }
     }
 }
