@@ -4,18 +4,21 @@ using System.Text;
 
 namespace X86Sharp
 {
-    public struct Operand
+    public class Operand
     {
-        private OperandType OperandType { get; }
+        private OperandType _type { get; }
 
-        private uint? Value { get; }
-        private OperandSize Size { get; }
+        private uint _value;
+
+        public ref uint Value => ref _value;
+
+        private OperandSize _size { get; }
 
         private Operand(OperandType type, uint value, OperandSize size)
         {
-            OperandType = type;
-            Value = value;
-            Size = size;
+            _type = type;
+            _value = value;
+            _size = size;
         }
 
         public static implicit operator Operand(Address addr)
@@ -46,6 +49,36 @@ namespace X86Sharp
         public static implicit operator Operand(byte @byte)
         {
             return new Operand(OperandType.Immediate, @byte, OperandSize.BYTE);
+        }
+
+        public int SignedValue
+        {
+            get
+            {
+                switch(_size)
+                {
+                    case OperandSize.BYTE:
+                        return (sbyte)_value;
+                    case OperandSize.WORD:
+                        return (short)_value;
+                    case OperandSize.DWORD:
+                        return (int)_value;
+                    default:
+                        throw new IndexOutOfRangeException();
+                }
+            }
+            set
+            {
+                switch(_size)
+                {
+                    case OperandSize.BYTE:
+                        _value = (byte)value;
+                        break;
+                    case OperandSize.WORD:
+                        _value = (ushort)value;
+                        break;
+                }
+            }
         }
     }
 

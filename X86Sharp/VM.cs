@@ -48,8 +48,8 @@ namespace X86Sharp
             }
         }
         public RegisterManager Registers { get; private set; }
-        private RegisterMemory EAX, EBX, ECX, EDX;
-        private RegisterMemory ESI, EDI, ESP, EBP, EIP;
+        private GeneralRegister EAX, EBX, ECX, EDX;
+        private GeneralRegister ESI, EDI, ESP, EBP, EIP;
         #endregion
 
         #region Segments

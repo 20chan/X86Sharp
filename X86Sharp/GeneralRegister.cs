@@ -3,7 +3,7 @@
 namespace X86Sharp
 {
     [StructLayout(LayoutKind.Explicit, Size = 4)]
-    public struct RegisterMemory
+    public struct GeneralRegister
     {
         [FieldOffset(0)]
         public uint DWord;
@@ -16,10 +16,10 @@ namespace X86Sharp
         [FieldOffset(3)]
         public byte LowByte;
 
-        public static implicit operator uint(RegisterMemory register)
+        public static implicit operator uint(GeneralRegister register)
             => register.DWord;
 
-        public static implicit operator RegisterMemory(uint value)
-            => new RegisterMemory() { DWord = value };
+        public static implicit operator GeneralRegister(uint value)
+            => new GeneralRegister() { DWord = value };
     }
 }
